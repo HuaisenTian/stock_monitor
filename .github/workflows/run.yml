@@ -1,1 +1,32 @@
+name: 每日股价监控
 
+on:
+  schedule:
+    # 每天 UTC 时间 4:00 (北京12点) 和 10:00 (北京18点) 运行
+    - cron: '0 4,10 * * *'
+  workflow_dispatch: # 允许你手动点击按钮测试运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 迁出代码
+      uses: actions/checkout@v3
+
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: 安装依赖
+      run: |
+        pip install -r requirements.txt
+
+    - name: 运行监控脚本
+      env:
+        # 这里引用 Github Secrets 中设置的变量
+        MAIL_USER: ${{ secrets.MAIL_USER }}
+        MAIL_PASS: ${{ secrets.MAIL_PASS }}
+      run: |
+        python main.py
