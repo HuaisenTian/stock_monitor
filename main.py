@@ -2,6 +2,7 @@ import requests
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
+from email.utils import formataddr
 import os
 
 STOCK_CODE = "sh600795"  # 国电电力 (上海证券交易所)
@@ -33,13 +34,16 @@ def send_email(stock_name, price):
     content = f"【股价提醒】\n股票：{stock_name} ({STOCK_CODE})\n当前价格：{price}\n已超过目标价格 {TARGET_PRICE}。"
 
     message = MIMEText(content, 'plain', 'utf-8')
-    message['From'] = Header("股价监控助手", 'utf-8')
-    message['To'] = Header("我", 'utf-8')
+    message['From'] = formataddr(["股价监控助手", MAIL_USER])
+    message['To'] = formataddr(["我自己", RECEIVER])
+
     message['Subject'] = Header(f"注意！{stock_name} 股价已达 {price}", 'utf-8')
 
     try:
         smtp_obj = smtplib.SMTP_SSL(MAIL_HOST, 465)
+        print("连接SMTP服务器成功...")
         smtp_obj.login(MAIL_USER, MAIL_PASS)
+        print("登录成功...")
         smtp_obj.sendmail(MAIL_USER, [RECEIVER], message.as_string())
         print("邮件发送成功")
         smtp_obj.quit()
@@ -58,5 +62,4 @@ if __name__ == "__main__":
             print(f"价格 {price} > {TARGET_PRICE}，正在发送邮件...")
             send_email(name, price)
         else:
-
             print(f"价格 {price} <= {TARGET_PRICE}，无需发送邮件。")
