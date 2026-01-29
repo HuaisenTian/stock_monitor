@@ -58,10 +58,11 @@ if __name__ == "__main__":
     name, price = get_stock_price()
 
     if price is not None:
-        if price > TARGET_PRICE:
-            print(f"价格 {price} > {TARGET_PRICE}，正在发送邮件...")
+        if price >= TARGET_PRICE:
+            print(f"价格 {price} >= {TARGET_PRICE}，正在发送邮件...")
             send_email(name, price)
         else:
-            print(f"价格 {price} <= {TARGET_PRICE}，无需发送邮件。")
+            print(f"价格 {price} < {TARGET_PRICE}，无需发送邮件。")
+
 
 
