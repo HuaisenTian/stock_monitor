@@ -6,7 +6,7 @@ from email.utils import formataddr
 import os
 
 STOCK_CODE = "sh600795"  # 国电电力 (上海证券交易所)
-TARGET_PRICE = 4.6       # 触发价格
+TARGET_PRICE = 8.5       # 触发价格
 MAIL_HOST = "smtp.qq.com"
 MAIL_USER = os.environ.get("MAIL_USER")
 MAIL_PASS = os.environ.get("MAIL_PASS")
@@ -63,6 +63,7 @@ if __name__ == "__main__":
             send_email(name, price)
         else:
             print(f"价格 {price} < {TARGET_PRICE}，无需发送邮件。")
+
 
 
 
