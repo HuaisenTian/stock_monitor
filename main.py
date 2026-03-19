@@ -5,17 +5,19 @@ from email.header import Header
 from email.utils import formataddr
 import os
 
+# 股票监控列表：代码、名称、触发价格、触发条件（above 表示高于阈值触发，below 表示低于阈值触发）
 STOCKS = [
     {"code": "sh600795", "name": "国电电力", "target": 8.5, "condition": "above"},
     {"code": "sh600489", "name": "中金黄金", "target": 20.0, "condition": "below"}
 ]
+
 MAIL_HOST = "smtp.qq.com"
 MAIL_USER = os.environ.get("MAIL_USER")
 MAIL_PASS = os.environ.get("MAIL_PASS")
 RECEIVER = os.environ.get("MAIL_USER")
 
 
-def get_stock_price():
+def get_stock_price(stock_code):
     """根据股票代码获取实时股价，返回 (股票名称, 当前价格) 或 (None, None)"""
     url = f"http://hq.sinajs.cn/list={stock_code}"
     headers = {"Referer": "https://finance.sina.com.cn"}
@@ -32,6 +34,7 @@ def get_stock_price():
         print(f"获取股票 {stock_code} 价格失败: {e}")
         return None, None
     return None, None
+
 
 def send_email(stock_name, stock_code, price, target_price, condition):
     """发送邮件通知，condition 为 'above' 或 'below'"""
@@ -60,6 +63,7 @@ def send_email(stock_name, stock_code, price, target_price, condition):
     except smtplib.SMTPException as e:
         print(f"邮件发送失败: {e}")
 
+
 if __name__ == "__main__":
     if not MAIL_USER or not MAIL_PASS:
         print("错误：未检测到环境变量，请在Github Secrets中配置。")
@@ -79,8 +83,3 @@ if __name__ == "__main__":
             send_email(name, stock["code"], price, target, condition)
         else:
             print(f"股票 {stock['name']} 未触发（当前 {price}，条件 {condition} {target}）")
-
-
-
-
-
