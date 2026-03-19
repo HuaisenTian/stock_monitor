@@ -5,8 +5,10 @@ from email.header import Header
 from email.utils import formataddr
 import os
 
-STOCK_CODE = "sh600795"  # 国电电力 (上海证券交易所)
-TARGET_PRICE = 8.5       # 触发价格
+STOCKS = [
+    {"code": "sh600795", "name": "国电电力", "target": 8.5, "condition": "above"},
+    {"code": "sh600489", "name": "中金黄金", "target": 20.0, "condition": "below"}
+]
 MAIL_HOST = "smtp.qq.com"
 MAIL_USER = os.environ.get("MAIL_USER")
 MAIL_PASS = os.environ.get("MAIL_PASS")
@@ -14,7 +16,8 @@ RECEIVER = os.environ.get("MAIL_USER")
 
 
 def get_stock_price():
-    url = f"http://hq.sinajs.cn/list={STOCK_CODE}"
+    """根据股票代码获取实时股价，返回 (股票名称, 当前价格) 或 (None, None)"""
+    url = f"http://hq.sinajs.cn/list={stock_code}"
     headers = {"Referer": "https://finance.sina.com.cn"}
 
     try:
@@ -23,20 +26,27 @@ def get_stock_price():
             data = response.text.split('"')[1].split(',')
             stock_name = data[0]
             current_price = float(data[3])
-            print(f"当前 {stock_name} 价格: {current_price}")
+            print(f"获取 {stock_name}({stock_code}) 成功，当前价格: {current_price}")
             return stock_name, current_price
     except Exception as e:
-        print(f"获取股价失败: {e}")
+        print(f"获取股票 {stock_code} 价格失败: {e}")
         return None, None
     return None, None
 
-def send_email(stock_name, price):
-    content = f"【股价提醒】\n股票：{stock_name} ({STOCK_CODE})\n当前价格：{price}\n已超过目标价格 {TARGET_PRICE}。"
+def send_email(stock_name, stock_code, price, target_price, condition):
+    """发送邮件通知，condition 为 'above' 或 'below'"""
+    if condition == "above":
+        action = "超过"
+        description = f"已超过目标价格 {target_price}"
+    else:
+        action = "低于"
+        description = f"已低于目标价格 {target_price}"
+
+    content = f"【股价提醒】\n股票：{stock_name} ({stock_code})\n当前价格：{price}\n{description}。"
 
     message = MIMEText(content, 'plain', 'utf-8')
     message['From'] = formataddr(["股价监控助手", MAIL_USER])
     message['To'] = formataddr(["我自己", RECEIVER])
-
     message['Subject'] = Header(f"注意！{stock_name} 股价已达 {price}", 'utf-8')
 
     try:
@@ -55,14 +65,20 @@ if __name__ == "__main__":
         print("错误：未检测到环境变量，请在Github Secrets中配置。")
         exit(1)
 
-    name, price = get_stock_price()
+    for stock in STOCKS:
+        name, price = get_stock_price(stock["code"])
+        if price is None:
+            continue  # 获取失败，跳过该股票
 
-    if price is not None:
-        if price >= TARGET_PRICE:
-            print(f"价格 {price} >= {TARGET_PRICE}，正在发送邮件...")
-            send_email(name, price)
+        target = stock["target"]
+        condition = stock["condition"]
+
+        # 根据触发条件判断
+        if (condition == "above" and price >= target) or (condition == "below" and price <= target):
+            print(f"股票 {stock['name']} 触发条件（{condition} {target}），当前价格 {price}，正在发送邮件...")
+            send_email(name, stock["code"], price, target, condition)
         else:
-            print(f"价格 {price} < {TARGET_PRICE}，无需发送邮件。")
+            print(f"股票 {stock['name']} 未触发（当前 {price}，条件 {condition} {target}）")
 
 
 
