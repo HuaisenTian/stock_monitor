@@ -2,31 +2,42 @@ name: 每日股价监控
 
 on:
   schedule:
-    # 每天 UTC 时间 4:00 (北京12点) 和 10:00 (北京18点)，仅限周一到周五
+    # 每天北京时间 12:00 和 18:00，周一到周五运行
+    # GitHub Actions 使用 UTC 时间，所以对应 UTC 04:00 和 10:00
     - cron: '0 4,10 * * 1-5'
-  workflow_dispatch: # 允许你手动点击按钮测试运行
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    permissions:
+      contents: read
+
     steps:
-    - name: 迁出代码
-      uses: actions/checkout@v5
+      - name: 迁出代码
+        uses: actions/checkout@v5
 
-    - name: 设置 Python 环境
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.9'
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
 
-    - name: 安装依赖
-      run: |
-        pip install -r requirements.txt
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install requests
+          fi
 
-    - name: 运行监控脚本
-      env:
-        # 这里引用 Github Secrets 中设置的变量
-        MAIL_USER: ${{ secrets.MAIL_USER }}
-        MAIL_PASS: ${{ secrets.MAIL_PASS }}
-      run: |
-        python main.py
+      - name: 运行监控脚本
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+        run: python main.py
