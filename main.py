@@ -7,8 +7,9 @@ import os
 
 # 股票监控列表：代码、名称、触发价格、触发条件（above 表示高于阈值触发，below 表示低于阈值触发）
 STOCKS = [
-    {"code": "sh600795", "name": "国电电力", "target": 8.5, "condition": "above"},
-    {"code": "sz000975", "name": "山金国际", "target": 35.0, "condition": "above"}
+    {"code": "sz000975", "name": "山金国际", "target": 19.0, "condition": "below"},
+    {"code": "sz000975", "name": "山金国际", "target": 35.0, "condition": "above"},
+    {"code": "sz159530", "name": "机器人ETF", "target": 1.8, "condition": "above"}
 ]
 
 MAIL_HOST = "smtp.qq.com"
