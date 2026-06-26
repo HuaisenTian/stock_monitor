@@ -4,7 +4,7 @@ on:
   schedule:
     # 每天北京时间 12:00 和 18:00，周一到周五运行
     # GitHub Actions 使用 UTC 时间，所以对应 UTC 04:00 和 10:00
-    - cron: '0 2,7 * * 1-5'
+    - cron: '0 1,5 * * 1-5'
   workflow_dispatch:
 
 jobs:

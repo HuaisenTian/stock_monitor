@@ -7,7 +7,7 @@ import os
 
 # 股票监控列表：代码、名称、触发价格、触发条件（above 表示高于阈值触发，below 表示低于阈值触发）
 STOCKS = [
-    {"code": "sz000975", "name": "山金国际", "target": 18.0, "condition": "below"},
+    {"code": "sz000975", "name": "山金国际", "target": 17.0, "condition": "below"},
     {"code": "sz000975", "name": "山金国际", "target": 30.0, "condition": "above"},
     {"code": "sz159530", "name": "机器人ETF", "target": 1.8, "condition": "above"}
 ]
