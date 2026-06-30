@@ -10,7 +10,7 @@ STOCKS = [
     {"code": "sz000975", "name": "山金国际", "target": 17.0, "condition": "below"},
     {"code": "sz000975", "name": "山金国际", "target": 30.0, "condition": "above"},
     {"code": "sz159530", "name": "机器人ETF", "target": 1.2, "condition": "below"},
-    {"code": "sh603259", "name": "药明康德", "target": 148.0, "condition": "above"}
+    {"code": "sh603259", "name": "药明康德", "target": 145.0, "condition": "above"}
 ]
 
 MAIL_HOST = "smtp.qq.com"
