@@ -3,7 +3,7 @@ name: 每日股价监控
 on:
   schedule:
     # 每天北京时间 12:00 左右和 16:00左右运行，周一到周五运行
-    - cron: '30 0,4 * * 1-5'
+    - cron: '20 0,4 * * 1-5'
   workflow_dispatch:
 
 jobs:
