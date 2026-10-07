@@ -11,7 +11,7 @@ STOCKS = [
     {"code": "sz000975", "name": "山金国际", "target": 30.0, "condition": "above"},
     {"code": "sz159530", "name": "机器人ETF", "target": 1.20, "condition": "below"},
     {"code": "sh603259", "name": "药明康德", "target": 150.0, "condition": "below"},
-    {"code": "sh001270", "name": "铖昌科技", "target": 75.0, "condition": "below"},
+    {"code": "sz001270", "name": "铖昌科技", "target": 75.0, "condition": "below"},
     {"code": "sh603986", "name": "兆易创新", "target": 300.0, "condition": "below"}
 ]
 
