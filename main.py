@@ -21,15 +21,14 @@ STOCKS = [
     {"code": "sh603986", "name": "兆易创新", "target": 300.0, "condition": "below"},
 ]
 
-# 这三只银行均在上交所上市。
+# 这两只银行均在上交所上市。
 BANK_STOCKS = [
     {"code": "601398", "name": "工商银行"},
     {"code": "601939", "name": "建设银行"},
-    {"code": "601838", "name": "成都银行"},
 ]
 
 HIGH_PRICE_SPREAD = 1.2
-LOW_PRICE_SPREAD = 2.5
+LOW_PRICE_SPREAD = 3.0
 
 MAIL_HOST = "smtp.qq.com"
 MAIL_USER = os.environ.get("MAIL_USER")
